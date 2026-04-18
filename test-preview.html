@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KreyolConnect - Test Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { navy: '#1B4F72', red: '#E74C3C', green: '#27AE60', bg: '#F8F9FA', text: '#1A1A2E' }
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Nunito', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-brand-bg font-sans text-brand-text max-w-md mx-auto min-h-screen relative shadow-2xl overflow-x-hidden">
+
+  <!-- Header -->
+  <header class="px-6 pt-10 pb-4 flex justify-between items-end bg-brand-navy text-white rounded-b-3xl shadow-md">
+    <div>
+      <h1 class="text-2xl font-display font-bold">Bonjou, Jean!</h1>
+      <p class="text-sm border-white/20 mt-1 capitalize opacity-80" id="dateDisplay"></p>
+    </div>
+    <button class="bg-white/20 px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-2">
+      🇭🇹 HT
+    </button>
+  </header>
+
+  <main class="flex-1 px-4 mt-6 space-y-6 pb-24">
+
+    <!-- Status Alert Banner -->
+    <section class="bg-red-50 border-l-4 border-brand-red p-4 rounded-r-xl shadow-sm">
+      <div class="flex gap-3">
+        <span class="text-xl">⚠️</span>
+        <div>
+          <h2 class="text-brand-red font-bold">TPS ou ap ekspire nan 45 jou</h2>
+          <button class="mt-2 text-sm font-bold bg-brand-red text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 active:scale-95 transition-transform">
+            Renouvle Kounye a
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions Grid -->
+    <section class="grid grid-cols-2 gap-3">
+      <button class="bg-blue-50 flex flex-col items-center justify-center p-4 rounded-2xl shadow-sm border border-black/5">
+        <span class="text-3xl mb-2">📋</span><span class="font-bold text-sm text-brand-navy">Estatou Mwen</span>
+      </button>
+      <button class="bg-green-50 flex flex-col items-center justify-center p-4 rounded-2xl shadow-sm border border-black/5">
+        <span class="text-3xl mb-2">💸</span><span class="font-bold text-sm text-brand-navy">Voye Lajan</span>
+      </button>
+      <button class="bg-yellow-50 flex flex-col items-center justify-center p-4 rounded-2xl shadow-sm border border-black/5">
+         <span class="text-3xl mb-2">📍</span><span class="font-bold text-sm text-brand-navy">Jwenn Èd</span>
+      </button>
+      <button class="bg-purple-50 flex flex-col items-center justify-center p-4 rounded-2xl shadow-sm border border-black/5">
+         <span class="text-3xl mb-2">⚖️</span><span class="font-bold text-sm text-brand-navy">Dwa Mwen</span>
+      </button>
+    </section>
+
+    <!-- Latest News (Mocked) -->
+    <section>
+      <h3 class="font-display font-bold text-lg mb-3 px-1">Dènye Nouvèl</h3>
+      <div class="flex overflow-x-auto pb-4 -mx-4 px-4 space-x-3 snap-x">
+        <div class="min-w-[260px] bg-white border border-gray-200 p-4 rounded-xl shadow-sm snap-start">
+          <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">USCIS • Sep 14</span>
+          <h4 class="font-bold mt-1 text-brand-navy">USCIS extends TPS reregistration period.</h4>
+          <p class="text-sm text-gray-500 mt-1 line-clamp-2">The Department of Homeland Security announced a massive extension...</p>
+        </div>
+        <div class="min-w-[260px] bg-white border border-gray-200 p-4 rounded-xl shadow-sm snap-start">
+           <span class="text-xs text-gray-500 uppercase font-bold tracking-wider">NY STATE • Sep 10</span>
+           <h4 class="font-bold mt-1 text-brand-navy">New Housing Fund Available</h4>
+        </div>
+      </div>
+    </section>
+
+    <!-- Remittance Widget -->
+    <section class="bg-gradient-to-r from-brand-navy to-blue-800 p-5 rounded-2xl text-white shadow-lg relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 text-7xl opacity-10">💸</div>
+      <p class="text-sm opacity-90 font-bold mb-1 uppercase tracking-wider">Pousantaj jodi a - CAM</p>
+      <h2 class="text-3xl font-display font-bold">$1 = 132.00 HTG</h2>
+      <p class="text-sm mt-1 mb-4 opacity-90">Instant Transfer</p>
+      <button class="bg-white text-brand-navy text-sm font-bold py-2 px-4 rounded-lg shadow hover:bg-gray-100">
+        Konpare tout pousantaj
+      </button>
+    </section>
+
+  </main>
+
+  <!-- Bottom Nav -->
+  <div class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 px-6 py-3 flex justify-between pb-8 shadow-lg">
+    <button class="p-2 text-2xl scale-110">🏠</button>
+    <button class="p-2 text-2xl opacity-40">⚖️</button>
+    <button class="p-2 text-2xl opacity-40">💬</button>
+    <button class="p-2 text-2xl opacity-40">⚙️</button>
+  </div>
+
+  <script>
+    document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('fr-FR', { weekday: 'long', month: 'long', day: 'numeric' });
+  </script>
+</body>
+</html>

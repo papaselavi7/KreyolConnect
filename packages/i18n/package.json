@@ -1,0 +1,8 @@
+{
+  "name": "@kreyolconnect/i18n",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "i18next": "^23.0.0"
+  }
+}

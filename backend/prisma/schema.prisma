@@ -1,0 +1,177 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String             @id @default(uuid()) @db.Uuid
+  email              String?            @unique
+  phone              String?
+  full_name          String?
+  preferred_language String             @default("ht") // 'ht' = Kreyòl, 'en' = English
+  immigration_status String?            // 'tps', 'daca', 'asylum', 'green_card', 'citizen', 'undocumented', 'other'
+  arrival_year       Int?
+  us_state           String?
+  zip_code           String?
+  is_premium         Boolean            @default(false)
+  stripe_customer_id String?
+  push_token         String?
+  status_records     StatusRecord[]
+  alerts             Alert[]
+  chat_sessions      ChatSession[]
+  bookmarks          Bookmark[]
+  notifications      NotificationLog[]
+  subscriptions      Subscription[]
+  created_at         DateTime           @default(now())
+  updated_at         DateTime           @updatedAt
+}
+
+model StatusRecord {
+  id                    String    @id @default(uuid()) @db.Uuid
+  user_id               String    @db.Uuid
+  user                  User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  status_type           String    // 'TPS', 'DACA', 'EAD', 'I-94', 'asylum'
+  document_number       String?
+  issue_date            DateTime? @db.Date
+  expiry_date           DateTime? @db.Date
+  renewal_reminder_days Int       @default(90)
+  notes                 String?
+  created_at            DateTime  @default(now())
+}
+
+model Alert {
+  id           String    @id @default(uuid()) @db.Uuid
+  user_id      String    @db.Uuid
+  user         User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  alert_type   String    // 'deadline', 'policy_change', 'news', 'reminder'
+  title_ht     String
+  title_en     String
+  body_ht      String
+  body_en      String
+  action_url   String?
+  is_read      Boolean   @default(false)
+  scheduled_at DateTime?
+  created_at   DateTime  @default(now())
+}
+
+model Resource {
+  id                    String     @id @default(uuid()) @db.Uuid
+  category              String     // 'legal', 'housing', 'food', 'health', 'employment', 'education', 'mental_health'
+  name                  String
+  name_ht               String?
+  description_en        String?
+  description_ht        String?
+  address               String?
+  city                  String?
+  state                 String?
+  zip_code              String?
+  latitude              Decimal?   @db.Decimal(10, 6)
+  longitude             Decimal?   @db.Decimal(10, 6)
+  phone                 String?
+  website               String?
+  email                 String?
+  serves_haitian_creole Boolean    @default(false)
+  is_free               Boolean    @default(false)
+  hours                 String?
+  verified_at           DateTime?
+  created_at            DateTime   @default(now())
+}
+
+model Lawyer {
+  id                String   @id @default(uuid()) @db.Uuid
+  full_name         String
+  firm_name         String?
+  specialties       String[] // e.g. ['TPS', 'asylum', 'deportation defense', 'DACA']
+  speaks_creole     Boolean  @default(false)
+  city              String?
+  state             String?
+  phone             String?
+  email             String?
+  website           String?
+  consultation_fee  Decimal? @db.Decimal(10, 2)
+  free_consultation Boolean  @default(false)
+  rating            Decimal  @default(0) @db.Decimal(3, 2)
+  review_count      Int      @default(0)
+  verified          Boolean  @default(false)
+  created_at        DateTime @default(now())
+}
+
+model RemittanceProvider {
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String
+  logo_url          String?
+  send_fee_usd      Decimal  @db.Decimal(10, 2)
+  exchange_rate     Decimal  @db.Decimal(10, 2) // USD to HTG
+  transfer_speed    String   // 'instant', '1-2 days', '3-5 days'
+  min_amount        Decimal? @db.Decimal(10, 2)
+  max_amount        Decimal? @db.Decimal(10, 2)
+  payout_methods    String[] // ['bank', 'cash_pickup', 'mobile_wallet']
+  app_url           String?
+  website_url       String?
+  last_updated      DateTime @default(now()) // Automatically syncs with rate updates
+}
+
+model Guide {
+  id                  String   @id @default(uuid()) @db.Uuid
+  slug                String   @unique
+  category            String   // 'tps', 'asylum', 'ead', 'green_card', 'rights', 'deportation'
+  title_en            String
+  title_ht            String
+  content_en          String   // Markdown
+  content_ht          String   // Markdown
+  difficulty          String   // 'beginner', 'intermediate', 'advanced'
+  estimated_read_mins Int?
+  is_premium          Boolean  @default(false)
+  published_at        DateTime @default(now())
+  updated_at          DateTime @updatedAt
+}
+
+model ChatSession {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String   @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  messages   Json     // Array of {role, content, timestamp}
+  language   String   // 'ht' or 'en'
+  topic      String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Bookmark {
+  id            String   @id @default(uuid()) @db.Uuid
+  user_id       String   @db.Uuid
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  resource_type String   // 'resource', 'guide', 'lawyer'
+  resource_id   String   @db.Uuid
+  created_at    DateTime @default(now())
+}
+
+model NotificationLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  user_id   String   @db.Uuid
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  body      String
+  sent_at   DateTime @default(now())
+  opened_at DateTime?
+}
+
+model Subscription {
+  id                     String    @id @default(uuid()) @db.Uuid
+  user_id                String    @db.Uuid
+  user                   User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  plan                   String    // 'free', 'basic', 'premium'
+  stripe_subscription_id String?   @unique
+  current_period_start   DateTime?
+  current_period_end     DateTime?
+  status                 String    // 'active', 'canceled', 'past_due'
+  created_at             DateTime  @default(now())
+}
